@@ -5,11 +5,15 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 
+import messageRoutes from './routes/messages.js';
+
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
+
+app.use('/messages',messageRoutes);
 
 const PORT = process.env.PORT || 4000;
 const CONNECTION_URL = `mongodb+srv://${process.env.USER_NAME}:${process.env.USER_PASSWORD}@pralma.xhska.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
