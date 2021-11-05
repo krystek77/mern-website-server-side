@@ -1,0 +1,5 @@
+# .env file
+
+USER_NAME="YOUR_USER_NAME"
+USER_PASSWORD="YOUR_PASSWORD"
+CONNECTION_URL="mongodb+srv://<YOUR_USER_NAME>:<YOUR_PASSWORD>@pralma.xhska.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
