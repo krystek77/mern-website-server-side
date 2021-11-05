@@ -1,12 +1,10 @@
 import express from 'express';
+import {getMessages,getMessageById} from '../controllers/messages.js';
 
 const router = express.Router();
 
-router.get("/",(req,res)=>{
-    return res.status(200).send("Get all messages");
-})
-router.get("/:id",(req,res)=>{
-    return res.status(200).send("Get message by id");
-})
+
+router.get("/",getMessages);
+router.get("/:id",getMessageById);
 
 export default router;
