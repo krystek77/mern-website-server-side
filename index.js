@@ -9,8 +9,8 @@ import postRoutes from './routes/posts.js';
 
 const app = express();
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({extended:true,limit:"30mb"}));
+app.use(express.urlencoded({ extended: true,limit:"30mb" }));
 app.use(cors());
 
 app.use('/posts',postRoutes);
