@@ -1,7 +1,10 @@
 import Post from "../models/posts.js";
-// import mongoose from "mongoose";
+import mongoose from "mongoose";
 
 export const getPosts = async (req, res) => {
+  // if(!req.user.id) return res.status().json({message:"Unauthenticated"});
+    
+
   try {
     const posts = await Post.find();
     res.status(200).json(posts);
