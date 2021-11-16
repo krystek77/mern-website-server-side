@@ -1,20 +1,20 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const postSchema = new mongoose.Schema({
-    creator:String,
-    title:String,
-    contents:String,
-    selectedImage:String,
-    tags:[String],
-    createdAt:{
-        type:Date,
-        default:new Date()
-    },
-    likeCount:{
-        type:Number,
-        default:0
-    }
+  creator: { type: String,trim:true, default: "some author" },
+  title: { type: String,trim:true, default: "some title" },
+  contents: { type: String, default: "some contents" },
+  selectedImage: String,
+  tags: [{type:String,trim:true,default:"some tag"}],
+  createdAt: {
+    type: Date,
+    default: new Date(),
+  },
+  likeCount: {
+    type: Number,
+    default: 0,
+  },
 });
 
-const Post = mongoose.model("Post",postSchema);
+const Post = mongoose.model("Post", postSchema);
 export default Post;
