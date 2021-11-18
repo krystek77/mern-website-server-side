@@ -7,6 +7,7 @@ import cors from "cors";
 
 import postRoutes from './routes/posts.js';
 import userRoutes from './routes/users.js';
+import adminRoutes from './routes/admin.js';
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.use(cors());
 
 app.use('/posts',postRoutes);
 app.use('/users',userRoutes);
+app.use('/admin',adminRoutes);
 
 const PORT = process.env.PORT || 4000;
 const CONNECTION_URL = `mongodb+srv://${process.env.USER_NAME}:${process.env.USER_PASSWORD}@pralma.xhska.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
