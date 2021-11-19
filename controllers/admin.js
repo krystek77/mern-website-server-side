@@ -11,6 +11,7 @@ export const createAccount = async (req, res) => {
     const hashedPassword = await bcrypt.hash(userData.password, 10);
     const newUser = new User({ ...userData, password: hashedPassword, createdAt: Date.now() });
     await newUser.save();
+    
     res.status(201).json(newUser);
   } catch (error) {
     res.status(409).json({ message: error.message });

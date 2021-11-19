@@ -8,11 +8,10 @@ const auth = async (req, res, next) => {
     const token = req.headers.authorization.split(" ")[1];
     if (token) {
       const decodedData = jwt.verify(token, process.env.JWT_SECRET);
-      // console.log(decodedData);
       req.user={
           id:decodedData?.id,
           email:decodedData?.email,
-          roles:decodedData?.roles,
+          role:decodedData?.role,
           //iat,exp
       }
       next();

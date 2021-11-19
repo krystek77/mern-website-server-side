@@ -21,9 +21,10 @@ export const signin = async (req, res) => {
         firstName: updatedUser.firstName,
         lastName: updatedUser.lastName,
         email: updatedUser.email,
-        roles: updatedUser.roles,
+        role: updatedUser.role,
         createdAt: updatedUser.createdAt,
         lastLogin: updatedUser.lastLogin,
+        selectedImage:updatedUser.selectedImage
       },
       token,
     });
@@ -33,6 +34,7 @@ export const signin = async (req, res) => {
 };
 export const signup = async (req, res) => {
   const userData = req.body;
+  // console.log(userData)
   try {
     const existingUser = await User.findOne({ email: userData.email });
     if (existingUser) return res.status(400).json({ message: `User with email ${userData.email} already exists` });
@@ -48,9 +50,10 @@ export const signup = async (req, res) => {
         firstName: newUser.firstName,
         lastName: newUser.lastName,
         email: newUser.email,
-        roles: newUser.roles,
+        role: newUser.role,
         createdAt: newUser.createdAt,
         lastLogin: newUser.lastLogin,
+        selectedImage:newUser.selectedImage
       },
       token,
     });
