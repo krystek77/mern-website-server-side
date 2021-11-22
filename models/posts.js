@@ -1,7 +1,8 @@
 import mongoose from "mongoose";
 
 const postSchema = new mongoose.Schema({
-  creator: { type: String,trim:true, default: "some author" },
+  // creator: { type: String,trim:true, default: "some author" },
+  author:{type:mongoose.Schema.Types.ObjectId,ref:"User"},
   title: { type: String,trim:true, default: "some title" },
   contents: { type: String, default: "some contents" },
   selectedImage: String,
