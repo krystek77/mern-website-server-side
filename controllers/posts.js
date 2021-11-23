@@ -33,9 +33,9 @@ export const createPost = async (req, res) => {
 
   try {
     await newPost.save();
-    res.status(201).json(newPost);
+    return res.status(201).json(newPost);
   } catch (error) {
-    res.status(409).json({ message: error.message });
+    return res.status(409).json({ message: error.message });
   }
 };
 export const updatePost = async (req, res) => {
@@ -50,9 +50,9 @@ export const updatePost = async (req, res) => {
   try {
     const updatedPost = await Post.findByIdAndUpdate(_id, { ...post }, { new: true });
     // console.log(updatedPost);
-    res.status(200).json(updatedPost);
+    return res.status(200).json(updatedPost);
   } catch (error) {
-    res.status(409).json({ message: error.message });
+    return res.status(409).json({ message: error.message });
   }
 };
 
@@ -61,21 +61,33 @@ export const deletePost = async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(_id)) return res.status(404).json({ message: "No post with that ID" });
   try {
     await Post.findByIdAndRemove(_id);
-    res.status(200).json({ message: "Post deleted successfully" });
+    return res.status(200).json({ message: "Post deleted successfully" });
   } catch (error) {
-    res.status(409).json({ message: error.message });
+    return res.status(409).json({ message: error.message });
   }
 };
 
 export const likePost = async (req, res) => {
   const { id: _id } = req.params;
-
+  const {id:userID} = req.user;
+  if(!userID) return res.status(401).json({message:'Unauthorization'});
   if (!mongoose.Types.ObjectId.isValid(_id)) return res.satatus(404).json({ message: "No post with that ID" });
+  
   try {
     const post = await Post.findById(_id);
-    const likedPost = await Post.findByIdAndUpdate(_id, { likeCount: post.likeCount + 1 }, { new: true });
-    res.status(200).json(likedPost);
+    if(post.author.toString() === userID) return res.status(400).json({message:'You can not like your posts!'});
+    const index = post.likes.findIndex((id)=>id.toString()===userID);
+    if(index==-1){
+      //like
+      post.likes.push(mongoose.Types.ObjectId(userID));
+    }else {
+      //dislike
+      post.likes = post.likes.filter((id)=>id.toString()!==userID);
+    }
+    const likedPost = await Post.findByIdAndUpdate(_id, post, { new: true });
+    console.log(likedPost);
+    return res.status(201).json(likedPost);
   } catch (error) {
-    res.status(409).json({ message: error.message });
+    return res.status(409).json({ message: error.message });
   }
 };
