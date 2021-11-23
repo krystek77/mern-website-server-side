@@ -5,6 +5,18 @@ import bcrypt from "bcryptjs";
 
 import User from "../models/users.js";
 
+export const getAllPostsUser = async (req, res) => {
+  const { id } = req.user;
+  if (!id) return res.status(401).json({ message: "Unauthorization" });
+  try {
+    const data = await User.findById(id).populate("posts");
+    //data = {_id:,firstname,...,posts:[{},{},{}]}
+    return res.status(200).json(data);
+  } catch (error) {
+    return res.status(404).json({ message: error.message });
+  }
+};
+
 export const signin = async (req, res) => {
   const userData = req.body;
 
@@ -24,7 +36,7 @@ export const signin = async (req, res) => {
         role: updatedUser.role,
         createdAt: updatedUser.createdAt,
         lastLogin: updatedUser.lastLogin,
-        selectedImage:updatedUser.selectedImage
+        selectedImage: updatedUser.selectedImage,
       },
       token,
     });
@@ -53,7 +65,7 @@ export const signup = async (req, res) => {
         role: newUser.role,
         createdAt: newUser.createdAt,
         lastLogin: newUser.lastLogin,
-        selectedImage:newUser.selectedImage
+        selectedImage: newUser.selectedImage,
       },
       token,
     });
