@@ -26,7 +26,7 @@ export const signin = async (req, res) => {
     const isPasswordCorrect = await bcrypt.compare(userData.password, existingUser.password);
     if (!isPasswordCorrect) return res.status(400).json({ message: "Invalid password" });
     const updatedUser = await User.findOneAndUpdate({ _id: existingUser._id }, { lastLogin: Date.now() }, { new: true });
-    const token = jwt.sign({ id: existingUser._id, email: existingUser.email, roles: existingUser.roles }, process.env.JWT_SECRET, { expiresIn: "1h" });
+    const token = jwt.sign({ id: existingUser._id, email: existingUser.email, role: existingUser.role }, process.env.JWT_SECRET, { expiresIn: "1h" });
     return res.status(200).json({
       user: {
         _id: updatedUser._id,
@@ -54,7 +54,7 @@ export const signup = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(userData.password, 10);
     const newUser = await User.create({ ...userData, password: hashedPassword, createdAt: Date.now(), lastLogin: Date.now() });
-    const token = jwt.sign({ id: newUser._id, email: newUser.email, roles: newUser.roles }, process.env.JWT_SECRET, { expiresIn: "1h" });
+    const token = jwt.sign({ id: newUser._id, email: newUser.email, role: newUser.role }, process.env.JWT_SECRET, { expiresIn: "1h" });
 
     return res.status(201).json({
       user: {
