@@ -13,12 +13,16 @@ export const getAllUsers = async (req, res) => {
     const data = await User.find();
     return res.status(200).json(data);
   } catch (error) {
-    return res.status(404).json({message:error.message});
+    return res.status(404).json({ message: error.message });
   }
 };
 
 export const createAccount = async (req, res) => {
   const userData = req.body;
+
+  const { role } = req.user;
+  if (role !== Roles.ADMIN) return res.status(401).json({ message: "Unauthorization" });
+
   try {
     const existingUser = await User.findOne({ email: userData.email });
     if (existingUser) return res.status(400).json({ message: `User with email: ${userData.email} already exists!` });
