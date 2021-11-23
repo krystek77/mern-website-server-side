@@ -2,13 +2,12 @@ import Post from "../models/posts.js";
 import mongoose from "mongoose";
 
 export const getPosts = async (req, res) => {
-  // if(!req.user.id) return res.status().json({message:"Unauthenticated"});
-
   try {
-    const posts = await Post.find();
-    res.status(200).json(posts);
+    const posts = await Post.find({}, "-__v").populate({path:"author",select:"firstName"});
+    console.log(posts);
+    return res.status(200).json(posts);
   } catch (error) {
-    res.status(404).json({ message: error.message });
+    return res.status(404).json({ message: error.message });
   }
 };
 export const getPostById = async (req, res) => {
@@ -69,20 +68,20 @@ export const deletePost = async (req, res) => {
 
 export const likePost = async (req, res) => {
   const { id: _id } = req.params;
-  const {id:userID} = req.user;
-  if(!userID) return res.status(401).json({message:'Unauthorization'});
+  const { id: userID } = req.user;
+  if (!userID) return res.status(401).json({ message: "Unauthorization" });
   if (!mongoose.Types.ObjectId.isValid(_id)) return res.satatus(404).json({ message: "No post with that ID" });
-  
+
   try {
     const post = await Post.findById(_id);
-    if(post.author.toString() === userID) return res.status(400).json({message:'You can not like your posts!'});
-    const index = post.likes.findIndex((id)=>id.toString()===userID);
-    if(index==-1){
+    if (post.author.toString() === userID) return res.status(400).json({ message: "You can not like your posts!" });
+    const index = post.likes.findIndex((id) => id.toString() === userID);
+    if (index == -1) {
       //like
       post.likes.push(mongoose.Types.ObjectId(userID));
-    }else {
+    } else {
       //dislike
-      post.likes = post.likes.filter((id)=>id.toString()!==userID);
+      post.likes = post.likes.filter((id) => id.toString() !== userID);
     }
     const likedPost = await Post.findByIdAndUpdate(_id, post, { new: true });
     console.log(likedPost);
