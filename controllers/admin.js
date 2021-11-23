@@ -7,10 +7,11 @@ const Roles = {
 };
 
 export const getAllUsers = async (req, res) => {
-  const { role } = req.user;
+  const { role, id } = req.user;
   if (role !== Roles.ADMIN) return res.status(401).json({ message: "Unauthorization" });
+
   try {
-    const data = await User.find();
+    const data = await User.find({ _id: { $ne: id } }, "-__v");
     return res.status(200).json(data);
   } catch (error) {
     return res.status(404).json({ message: error.message });
