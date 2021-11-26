@@ -1,5 +1,6 @@
 import Post from "../models/posts.js";
 import mongoose from "mongoose";
+import User from "../models/users.js";
 
 export const getPosts = async (req, res) => {
   try {
@@ -16,14 +17,14 @@ export const getPostById = async (req, res) => {
 
   try {
     const post = await Post.findById(_id);
-    res.status(200).json(post);
+    return res.status(200).json(post);
   } catch (error) {
-    res.status(404).json({ message: error.message });
+    return res.status(404).json({ message: error.message });
   }
 };
 export const createPost = async (req, res) => {
   const post = req.body;
-  console.log(post);
+
   const { id } = req.user;
 
   if (!id) return res.status(401).json({ message: "Unauthenticated" });
@@ -31,8 +32,11 @@ export const createPost = async (req, res) => {
   const newPost = new Post({ ...post, author: id });
 
   try {
+    const currentUser = await User.findById(id);
+    const resultPost = { ...post,likes:[], author: { _id: currentUser._id, firstName: currentUser.firstName } };
     await newPost.save();
-    return res.status(201).json(newPost);
+
+    return res.status(201).json(resultPost);
   } catch (error) {
     return res.status(409).json({ message: error.message });
   }
