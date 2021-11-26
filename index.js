@@ -1,4 +1,6 @@
 import dotenv from "dotenv";
+import initializeUsers from "./seed/users_seeder.js";
+
 dotenv.config();
 
 import express from "express";
@@ -13,7 +15,7 @@ const app = express();
 
 app.use(express.json({ extended: true, limit: "50mb" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
-app.use(cors({origin:true}));
+app.use(cors({ origin: true }));
 
 app.use("/posts", postRoutes);
 app.use("/users", userRoutes);
@@ -23,5 +25,10 @@ const PORT = process.env.PORT || 4000;
 const CONNECTION_URL = `mongodb+srv://${process.env.USER_NAME}:${process.env.USER_PASSWORD}@pralma.xhska.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 mongoose
   .connect(CONNECTION_URL)
-  .then(() => app.listen(PORT, () => console.log(`Server running on PORT: ${PORT}. Successful connection to the database`)))
+  .then(() =>
+    app.listen(PORT, () => {
+      console.log(`Server running on PORT: ${PORT}. Successful connection to the database`);
+      initializeUsers();
+    })
+  )
   .catch((error) => console.log(error));

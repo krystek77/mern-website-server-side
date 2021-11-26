@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 
 export const getPosts = async (req, res) => {
   try {
-    const posts = await Post.find({}, "-__v").populate({path:"author",select:"firstName"});
+    const posts = await Post.find({}, "-__v").populate({ path: "author", select: "firstName" });
     // console.log(posts);
     return res.status(200).json(posts);
   } catch (error) {
@@ -23,12 +23,12 @@ export const getPostById = async (req, res) => {
 };
 export const createPost = async (req, res) => {
   const post = req.body;
+  console.log(post);
   const { id } = req.user;
 
   if (!id) return res.status(401).json({ message: "Unauthenticated" });
 
-  const newPost = new Post(post);
-  // console.log("FROM backend", post);
+  const newPost = new Post({ ...post, author: id });
 
   try {
     await newPost.save();
@@ -47,7 +47,7 @@ export const updatePost = async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(_id)) return res.status(404).json({ message: "No post with that ID" });
 
   try {
-    const updatedPost = await Post.findByIdAndUpdate(_id, { ...post }, { new: true });
+    const updatedPost = await Post.findByIdAndUpdate(_id, { ...post, author: user.id }, { new: true });
     // console.log(updatedPost);
     return res.status(200).json(updatedPost);
   } catch (error) {
