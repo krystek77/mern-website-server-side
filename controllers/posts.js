@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 export const getPosts = async (req, res) => {
   try {
     const posts = await Post.find({}, "-__v").populate({path:"author",select:"firstName"});
-    console.log(posts);
+    // console.log(posts);
     return res.status(200).json(posts);
   } catch (error) {
     return res.status(404).json({ message: error.message });
@@ -84,7 +84,7 @@ export const likePost = async (req, res) => {
       post.likes = post.likes.filter((id) => id.toString() !== userID);
     }
     const likedPost = await Post.findByIdAndUpdate(_id, post, { new: true });
-    console.log(likedPost);
+    // console.log(likedPost);
     return res.status(201).json(likedPost);
   } catch (error) {
     return res.status(409).json({ message: error.message });

@@ -1,23 +1,36 @@
-import dotenv from 'dotenv'
+import dotenv from "dotenv";
 dotenv.config();
 
 import jwt from "jsonwebtoken";
 
-const auth = async (req, res, next) => {
+const auth = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  // console.log("AuthHEADER",authHeader)
   try {
-    const token = req.headers.authorization.split(" ")[1];
-    if (token) {
-      const decodedData = jwt.verify(token, process.env.JWT_SECRET);
-      req.user={
-          id:decodedData?.id,
-          email:decodedData?.email,
-          role:decodedData?.role,
-          //iat,exp
-      }
-      next();
+    //check if authorization header exists and then get access token;
+
+    const access_token = authHeader && authHeader.split(" ")[1];
+
+    if (access_token) {
+      jwt.verify(access_token, process.env.JWT_ACCESS_TOKEN_SECRET, (error, decodedData) => {
+        if (error) {
+          //invalid access token or expired time elapsed
+          return res.status(403).json({ message: error.message });
+        }
+        //token verified successfully
+        req.user = {
+          id: decodedData?.id,
+          email: decodedData?.email,
+          role: decodedData?.role,
+        };
+        next();
+      });
+    } else {
+      // no access token
+      return res.status(401).json({message:'Unauthorization'});
     }
   } catch (error) {
-      res.status(409).json({message:error.message})
+    return res.status(409).json({ message: error.message });
   }
 };
 

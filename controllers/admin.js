@@ -33,8 +33,16 @@ export const createAccount = async (req, res) => {
     const newUser = new User({ ...userData, password: hashedPassword, createdAt: Date.now() });
     await newUser.save();
 
-    res.status(201).json(newUser);
+    return res.status(201).json({
+      _id:newUser._id,
+      firstName:newUser.firstName,
+      lastName:newUser.lastName,
+      selectedImage:newUser.selectedImage,
+      email:newUser.email,
+      createdAt:newUser.createdAt,
+      lastLogin:newUser.lastLogin,
+    });
   } catch (error) {
-    res.status(409).json({ message: error.message });
+    return res.status(409).json({ message: error.message });
   }
 };

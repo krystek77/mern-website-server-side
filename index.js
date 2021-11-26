@@ -13,7 +13,7 @@ const app = express();
 
 app.use(express.json({ extended: true, limit: "50mb" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
-app.use(cors());
+app.use(cors({origin:true}));
 
 app.use("/posts", postRoutes);
 app.use("/users", userRoutes);
