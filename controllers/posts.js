@@ -16,7 +16,7 @@ export const getPostById = async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(_id)) return res.status(404).json({ message: "No post with that ID" });
 
   try {
-    const post = await Post.findById(_id);
+    const post = await Post.findById(_id,"-__v").populate({path:"author",select:"firstName"});
     return res.status(200).json(post);
   } catch (error) {
     return res.status(404).json({ message: error.message });
