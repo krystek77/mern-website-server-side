@@ -51,9 +51,10 @@ export const updatePost = async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(_id)) return res.status(404).json({ message: "No post with that ID" });
 
   try {
-    const updatedPost = await Post.findByIdAndUpdate(_id, { ...post, author: user.id }, { new: true });
-    // console.log(updatedPost);
-    return res.status(200).json(updatedPost);
+    const currentUser = await User.findById(user.id);
+    const updatedPost = await Post.findByIdAndUpdate(_id,{...post,author:user.id}, { new: true });
+    const returnedUpdatedPost = {...post,author:{_id:currentUser._id,firstName:currentUser.firstName}};
+    return res.status(200).json(returnedUpdatedPost);
   } catch (error) {
     return res.status(409).json({ message: error.message });
   }
