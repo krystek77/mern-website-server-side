@@ -16,7 +16,7 @@ export const getPostById = async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(_id)) return res.status(404).json({ message: "No post with that ID" });
 
   try {
-    const post = await Post.findById(_id,"-__v").populate({path:"author",select:"firstName"});
+    const post = await Post.findById(_id, "-__v").populate({ path: "author", select: "firstName" });
     return res.status(200).json(post);
   } catch (error) {
     return res.status(404).json({ message: error.message });
@@ -29,11 +29,11 @@ export const createPost = async (req, res) => {
 
   if (!id) return res.status(401).json({ message: "Unauthenticated" });
 
-  const newPost = new Post({ ...post, author: id });
+  const newPost = new Post(post);
 
   try {
     const currentUser = await User.findById(id);
-    const resultPost = { ...post,likes:[], author: { _id: currentUser._id, firstName: currentUser.firstName } };
+    const resultPost = { ...post, _id: newPost._id, likes: [], author: { _id: currentUser._id, firstName: currentUser.firstName } };
     await newPost.save();
 
     return res.status(201).json(resultPost);
@@ -52,8 +52,8 @@ export const updatePost = async (req, res) => {
 
   try {
     const currentUser = await User.findById(user.id);
-    const updatedPost = await Post.findByIdAndUpdate(_id,{...post,author:user.id}, { new: true });
-    const returnedUpdatedPost = {...post,author:{_id:currentUser._id,firstName:currentUser.firstName}};
+    const updatedPost = await Post.findByIdAndUpdate(_id, post, { new: true });
+    const returnedUpdatedPost = { ...post,_id: updatedPost._id, author: { _id: currentUser._id, firstName: currentUser.firstName } };
     return res.status(200).json(returnedUpdatedPost);
   } catch (error) {
     return res.status(409).json({ message: error.message });
