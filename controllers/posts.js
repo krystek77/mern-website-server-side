@@ -1,18 +1,18 @@
-import Post from '../models/posts.js';
-import mongoose from 'mongoose';
-import User from '../models/users.js';
+import Post from "../models/posts.js";
+import mongoose from "mongoose";
+import User from "../models/users.js";
 
 export const getPostsBySearch = async (req, res) => {
   const { searchQuery, tags } = req.query; //{searchQuery,tags}
-  const title = new RegExp(searchQuery, 'i');
+  const title = new RegExp(searchQuery, "i");
 
   try {
     const posts = await Post.find(
       {
-        $or: [{ title }, { tags: { $in: tags.split(',') } }],
+        $or: [{ title }, { tags: { $in: tags.split(",") } }],
       },
-      '-__v'
-    ).populate({ path: 'author', select: 'firstName' });
+      "-__v"
+    ).populate({ path: "author", select: "firstName" });
     return res.status(200).json(posts);
   } catch (error) {
     return res.status(404).json({ message: error.message });
@@ -20,26 +20,34 @@ export const getPostsBySearch = async (req, res) => {
 };
 
 export const getPosts = async (req, res) => {
+  const query = req.query;
   try {
-    const posts = await Post.find({}, '-__v').populate({
-      path: 'author',
-      select: 'firstName',
-    });
+    const LIMIT = 6;
+    const startIndex = (Number(query.page)-1) * LIMIT;
+
+    const total = await Post.countDocuments({});
+    const posts = await Post.find({}, "-__v")
+      .populate({
+        path: "author",
+        select: "firstName",
+      })
+      .sort({ createdAt: "desc" })
+      .limit(LIMIT).skip(startIndex);
     // console.log(posts);
-    return res.status(200).json(posts);
+    return res.status(200).json({ posts: posts, numberOfPages: Math.ceil(total / LIMIT) });
   } catch (error) {
     return res.status(404).json({ message: error.message });
   }
 };
+
 export const getPostById = async (req, res) => {
   const { id: _id } = req.params;
-  if (!mongoose.Types.ObjectId.isValid(_id))
-    return res.status(404).json({ message: 'No post with that ID' });
+  if (!mongoose.Types.ObjectId.isValid(_id)) return res.status(404).json({ message: "No post with that ID" });
 
   try {
-    const post = await Post.findById(_id, '-__v').populate({
-      path: 'author',
-      select: 'firstName',
+    const post = await Post.findById(_id, "-__v").populate({
+      path: "author",
+      select: "firstName",
     });
     return res.status(200).json(post);
   } catch (error) {
@@ -51,7 +59,7 @@ export const createPost = async (req, res) => {
 
   const { id } = req.user;
 
-  if (!id) return res.status(401).json({ message: 'Unauthenticated' });
+  if (!id) return res.status(401).json({ message: "Unauthenticated" });
 
   const newPost = new Post(post);
 
@@ -75,10 +83,9 @@ export const updatePost = async (req, res) => {
   const user = req.user;
   const { id: _id } = req.params;
 
-  if (!user.id) return res.status(401).json({ message: 'Unauthenticated' });
+  if (!user.id) return res.status(401).json({ message: "Unauthenticated" });
 
-  if (!mongoose.Types.ObjectId.isValid(_id))
-    return res.status(404).json({ message: 'No post with that ID' });
+  if (!mongoose.Types.ObjectId.isValid(_id)) return res.status(404).json({ message: "No post with that ID" });
 
   try {
     const currentUser = await User.findById(user.id);
@@ -96,11 +103,10 @@ export const updatePost = async (req, res) => {
 
 export const deletePost = async (req, res) => {
   const { id: _id } = req.params;
-  if (!mongoose.Types.ObjectId.isValid(_id))
-    return res.status(404).json({ message: 'No post with that ID' });
+  if (!mongoose.Types.ObjectId.isValid(_id)) return res.status(404).json({ message: "No post with that ID" });
   try {
     await Post.findByIdAndRemove(_id);
-    return res.status(200).json({ message: 'Post deleted successfully' });
+    return res.status(200).json({ message: "Post deleted successfully" });
   } catch (error) {
     return res.status(409).json({ message: error.message });
   }
@@ -109,14 +115,12 @@ export const deletePost = async (req, res) => {
 export const likePost = async (req, res) => {
   const { id: _id } = req.params;
   const { id: userID } = req.user;
-  if (!userID) return res.status(401).json({ message: 'Unauthorization' });
-  if (!mongoose.Types.ObjectId.isValid(_id))
-    return res.satatus(404).json({ message: 'No post with that ID' });
+  if (!userID) return res.status(401).json({ message: "Unauthorization" });
+  if (!mongoose.Types.ObjectId.isValid(_id)) return res.satatus(404).json({ message: "No post with that ID" });
 
   try {
     const post = await Post.findById(_id);
-    if (post.author.toString() === userID)
-      return res.status(400).json({ message: 'You can not like your posts!' });
+    if (post.author.toString() === userID) return res.status(400).json({ message: "You can not like your posts!" });
     const index = post.likes.findIndex((id) => id.toString() === userID);
     if (index == -1) {
       //like

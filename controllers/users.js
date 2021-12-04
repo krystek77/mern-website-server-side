@@ -52,7 +52,7 @@ export const signin = async (req, res) => {
     const updatedUser = await User.findOneAndUpdate({ _id: existingUser._id }, { lastLogin: Date.now() }, { new: true }).select("-password -__v");
 
     const access_token = jwt.sign({ id: existingUser._id, email: existingUser.email, role: existingUser.role }, process.env.JWT_ACCESS_TOKEN_SECRET, { expiresIn: 20 });
-    const refresh_token = jwt.sign({ id: existingUser._id, email: existingUser.email, role: existingUser.role }, process.env.JWT_REFRESH_TOKEN_SECRET, { expiresIn: 120 });
+    const refresh_token = jwt.sign({ id: existingUser._id, email: existingUser.email, role: existingUser.role }, process.env.JWT_REFRESH_TOKEN_SECRET, { expiresIn: 600 });
 
     return res.status(200).json({ user: updatedUser, tokens: { access_token, refresh_token } });
   } catch (error) {
@@ -71,7 +71,7 @@ export const signup = async (req, res) => {
     const newUser = await User.create({ ...userData, password: hashedPassword, createdAt: Date.now(), lastLogin: Date.now() });
 
     const access_token = jwt.sign({ id: existingUser._id, email: existingUser.email, role: existingUser.role }, process.env.JWT_ACCESS_TOKEN_SECRET, { expiresIn: 20 });
-    const refresh_token = jwt.sign({ id: existingUser._id, email: existingUser.email, role: existingUser.role }, process.env.JWT_REFRESH_TOKEN_SECRET, { expiresIn: 120 });
+    const refresh_token = jwt.sign({ id: existingUser._id, email: existingUser.email, role: existingUser.role }, process.env.JWT_REFRESH_TOKEN_SECRET, { expiresIn: 600 });
 
     return res.status(201).json({
       user: {
