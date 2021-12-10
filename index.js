@@ -1,25 +1,27 @@
-import dotenv from "dotenv";
-import initializeUsers from "./seed/users_seeder.js";
+import dotenv from 'dotenv';
+import initializeUsers from './seed/users_seeder.js';
 
 dotenv.config();
 
-import express from "express";
-import mongoose from "mongoose";
-import cors from "cors";
+import express from 'express';
+import mongoose from 'mongoose';
+import cors from 'cors';
 
-import postRoutes from "./routes/posts.js";
-import userRoutes from "./routes/users.js";
-import adminRoutes from "./routes/admin.js";
+import postRoutes from './routes/posts.js';
+import userRoutes from './routes/users.js';
+import adminRoutes from './routes/admin.js';
+import galleryRoutes from './routes/gallery.js';
 
 const app = express();
 
-app.use(express.json({ extended: true, limit: "50mb" }));
-app.use(express.urlencoded({ extended: true, limit: "50mb" }));
+app.use(express.json({ extended: true, limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use(cors({ origin: true }));
 
-app.use("/posts", postRoutes);
-app.use("/users", userRoutes);
-app.use("/admin", adminRoutes);
+app.use('/posts', postRoutes);
+app.use('/users', userRoutes);
+app.use('/admin', adminRoutes);
+app.use('/gallery', galleryRoutes);
 
 const PORT = process.env.PORT || 4000;
 const CONNECTION_URL = `mongodb+srv://${process.env.USER_NAME}:${process.env.USER_PASSWORD}@pralma.xhska.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
@@ -27,7 +29,9 @@ mongoose
   .connect(CONNECTION_URL)
   .then(() =>
     app.listen(PORT, () => {
-      console.log(`Server running on PORT: ${PORT}. Successful connection to the database`);
+      console.log(
+        `Server running on PORT: ${PORT}. Successful connection to the database`
+      );
       initializeUsers();
     })
   )
