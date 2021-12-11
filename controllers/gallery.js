@@ -33,7 +33,7 @@ export const updatePhoto = async (req, res) => {
     photo.lastUpdated = Date.now();
     const updatedPhoto = await Photo.findByIdAndUpdate(_id, photo, {
       new: true,
-    });
+    }).select("-__v")
     return res.status(200).json(updatedPhoto);
   } catch (error) {
     return res.status(409).json({ message: error.message });
