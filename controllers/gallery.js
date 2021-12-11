@@ -5,7 +5,7 @@ export const getPhotos = async (req, res) => {
   const LIMIT = 14;
   try {
     const photos = await Photo.find({}, '-__V')
-      .sort({ createdAt: 'desc' })
+      .sort({ _id: -1 })
       .limit(LIMIT);
     return res.status(200).json(photos);
   } catch (error) {
