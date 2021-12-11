@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import initializeUsers from './seed/users_seeder.js';
+import initializeGallery from './seed/gallery_seeder.js'
 
 dotenv.config();
 
@@ -33,6 +34,7 @@ mongoose
         `Server running on PORT: ${PORT}. Successful connection to the database`
       );
       initializeUsers();
+      initializeGallery();
     })
   )
   .catch((error) => console.log(error));
