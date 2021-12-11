@@ -5,6 +5,7 @@ const photoSchema = new mongoose.Schema({
   image: { type: String },
   rows: { type: Number },
   cols: { type: Number },
+  equipment:{type:String},
   createdAt: { type: Date, default: Date.now() },
   lastUpdated: { type: Date, default: null },
 });
