@@ -2,11 +2,9 @@ import Photo from '../models/gallery.js';
 import mongoose from 'mongoose';
 
 export const getPhotos = async (req, res) => {
-  const LIMIT = 14;
+  const LIMIT = 12;
   try {
-    const photos = await Photo.find({}, '-__V')
-      .sort({ _id: -1 })
-      .limit(LIMIT);
+    const photos = await Photo.find({}, '-__V').sort({ _id: -1 }).limit(LIMIT);
     return res.status(200).json(photos);
   } catch (error) {
     return res.status(404).json({ message: error.message });
@@ -33,7 +31,7 @@ export const updatePhoto = async (req, res) => {
     photo.lastUpdated = Date.now();
     const updatedPhoto = await Photo.findByIdAndUpdate(_id, photo, {
       new: true,
-    }).select("-__v")
+    }).select('-__v');
     return res.status(200).json(updatedPhoto);
   } catch (error) {
     return res.status(409).json({ message: error.message });
