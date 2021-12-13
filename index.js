@@ -5,6 +5,7 @@ import initializeGallery from './seed/gallery_seeder.js'
 dotenv.config();
 
 import express from 'express';
+import compression from 'compression';
 import mongoose from 'mongoose';
 import cors from 'cors';
 
@@ -18,6 +19,9 @@ const app = express();
 app.use(express.json({ extended: true, limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use(cors({ origin: true }));
+
+app.use(compression());
+app.use(express.static('public'));
 
 app.use('/posts', postRoutes);
 app.use('/users', userRoutes);
