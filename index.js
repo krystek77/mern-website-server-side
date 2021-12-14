@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import initializeUsers from './seed/users_seeder.js';
-import initializeGallery from './seed/gallery_seeder.js'
+import initializeGallery from './seed/gallery_seeder.js';
 
 dotenv.config();
 
@@ -21,7 +21,7 @@ app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use(cors({ origin: true }));
 
 app.use(compression());
-app.use(express.static('public'));
+app.use(express.static('public', { maxAge: 3600000 }));
 
 app.use('/posts', postRoutes);
 app.use('/users', userRoutes);
