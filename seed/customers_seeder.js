@@ -29,8 +29,7 @@ czyste pranie przez cały pobyt i więcej czasu na korzystanie z oferowanych zaj
     subtitle:
       'Zalety zintegrowanej pralni w szpitalach, klinikach, laboratoriach i klinikach weterynaryjnych',
     markdown: `
-## Bardzo ważne jest, aby w laboratoriach, przemyśle spożywczym oraz w sektorze zdrowia
-zachować bezwzględną higienę
+## Bardzo ważne jest, aby w laboratoriach, przemyśle spożywczym oraz w sektorze zdrowia zachować bezwzględną higienę
     
 ![Zdrowi i higiena](../assets/images/customers/healthandhygiene.jpg)
     
