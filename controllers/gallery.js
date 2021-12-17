@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 export const getPhotos = async (req, res) => {
   const LIMIT = 12;
   try {
-    const photos = await Photo.find({}, '-__V').sort({ _id: -1 }).limit(LIMIT);
+    const photos = await Photo.find({}, '-__v').sort({ _id: -1 }).limit(LIMIT);
     return res.status(200).json(photos);
   } catch (error) {
     return res.status(404).json({ message: error.message });
