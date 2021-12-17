@@ -1,6 +1,7 @@
 import express from 'express';
 import {
   getCustomerBySlug,
+  getCustomerByID,
   getCustomers,
   addCustomer,
   updateCustomer,
@@ -8,6 +9,7 @@ import {
 
 const router = express.Router();
 
+router.get('/details/:id', getCustomerByID);
 router.get('/:slug', getCustomerBySlug);
 router.get('/', getCustomers);
 router.post('/', addCustomer);
